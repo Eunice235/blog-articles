@@ -1,0 +1,84 @@
+---
+import { Image } from 'astro:assets';
+
+
+
+const socials = [
+    {icon:`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256"><g fill="currentColor"><path d="M224 128a96 96 0 1 1-96-96a96 96 0 0 1 96 96" opacity=".2"/><path d="M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24m8 191.63V152h24a8 8 0 0 0 0-16h-24v-24a16 16 0 0 1 16-16h16a8 8 0 0 0 0-16h-16a32 32 0 0 0-32 32v24H96a8 8 0 0 0 0 16h24v63.63a88 88 0 1 1 16 0"/></g></svg>`, link:'https://web.facebook.com/profile.php?id=61559685029948'},
+    {icon:`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256"><g fill="currentColor"><path d="M208 216h-48L48 40h48Z" opacity=".2"/><path d="m214.75 211.71l-62.6-98.38l61.77-67.95a8 8 0 0 0-11.84-10.76l-58.84 64.72l-40.49-63.63A8 8 0 0 0 96 32H48a8 8 0 0 0-6.75 12.3l62.6 98.37l-61.77 68a8 8 0 1 0 11.84 10.76l58.84-64.72l40.49 63.63A8 8 0 0 0 160 224h48a8 8 0 0 0 6.75-12.29M164.39 208L62.57 48h29l101.86 160Z"/></g></svg>`, link:'https://twitter.com/AfriqSilicon'},
+    {icon:`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256"><g fill="currentColor"><path d="M224 40v176a8 8 0 0 1-8 8H40a8 8 0 0 1-8-8V40a8 8 0 0 1 8-8h176a8 8 0 0 1 8 8" opacity=".2"/><path d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16m0 192H40V40h176zM96 112v64a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0m88 28v36a8 8 0 0 1-16 0v-36a20 20 0 0 0-40 0v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A36 36 0 0 1 184 140m-84-56a12 12 0 1 1-12-12a12 12 0 0 1 12 12"/></g></svg>`, link:'https://www.linkedin.com/company/afriq-silicon'},
+]
+
+const linkGroups = [
+    {
+        title:'Pages',
+        children:[
+            {link:'#', text:'Work'},
+            {link:'#', text:'Services'},
+            {link:'#', text:'Philosophy'},
+            {link:'#', text:'Contact Us'},
+        ]
+    },
+    {
+        title:'Solutions',
+        children:[
+            {link:'#', text:'School Management System'},
+            {link:'#', text:'Other Projects'},
+        ]
+    },
+    {
+        title:'Legal',
+        children:[
+            {link:'#', text:'Terms of Service'},
+            {link:'#', text:'Privacy Policy'},
+        ]
+    },
+]
+---
+
+<section class="">
+<div class="px-5 lg:px-16 py-16 border-y border-neutral-200 my-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="col-span-4 flex flex-col">
+            
+            <p class="mt-4 text-slate-300">
+                We will help you turn ideas into digital reality whatever industry you want to revolutionize
+            </p>
+            <div class="flex flex-row space-x-2 mt-4">
+                {
+                    socials.map(account => {
+                        return <>
+                            <a class="p-2 text-neutral-400 hover:text-neutral-500 hover:bg-neutral-100 rounded-full transition-all duration-300" target="_blank" href={account.link}>
+                            <Fragment set:html={account.icon} />
+                            </a>
+                            </>
+                    })
+                }
+            </div>
+        </div>
+        <div class="col-span-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {
+                linkGroups.map(group => {
+                    return <>
+                            <div>
+                                <h2 class="text-lg  text-slate-200 font-semibold">{group.title}</h2>
+                                <ul class="text-slate-300 flex flex-col space-y-2 mt-4">
+                                    {
+                                        group.children.map(childLink => {
+                                            return <>
+                                                <li class="hover:text-primary-500 transition-colors duration-300">- <a href={childLink.link}>{childLink.text}</a></li>
+                                                </>
+                                        })
+                                    }
+                                </ul>
+                            </div>
+                        </>
+                })
+            }
+        </div>
+    </div>
+</div>
+<div class="text-center pt-4 pb-8 text-neutral-500">
+    © {new Date().getFullYear()} Afriq Silicon, Inc. All rights reserved.
+</div>
+</section>

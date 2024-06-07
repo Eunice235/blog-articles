@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import type { ImageMetadata } from 'astro';
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
+import { Image } from 'astro:assets';
+import LButton from '../components/LButton.vue';
+import Cta from '../components/Cta.astro';
+
+
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/posts/**/*.{jpeg,jpg,png,gif,svg}');
+const reader = createReader(process.cwd(), keystaticConfig);
+const posts = await reader.collections.posts.all();
+---
+
+<section class="px-2 md:px-8 rounded-xl ">
+  <div class="grid grid-cols-3 gap-4  rounded-xl">
+      {
+          posts.slice(2,5).map((post) => {
+              return <>
+                      <div class="col-span-1 grid grid-rows-2 website-card animate-on-scroll p-2 bg-dark-400 items-center rounded-2xl">
+                          <div class="row-span-1">
+                              {images[post.entry.image] &&
+                              <Image src={images[post.entry.image]()} alt={post.entry.title} class="object-cover w-auto h-full" />
+                              }
+                          </div>
+                          <div class="row-span-1 ">
+                             
+                              <a href={`/posts/${post.slug}`} class="no-underline hover:underline">
+                                <h4 class="text-xl font-semibold text-slate-100">{post.entry.title}</h4>
+                            </a>
+                              <p class="mt-2 text-slate-100">{post.entry.summary.slice()}...</p>
+                              
+                          </div>
+                          <div class="item-center justify-center">
+                            
+                            <a href={`/posts/${post.slug}`} class="no-underline hover:underline">
+                                 <LButton client:only="vue" type="primary">Read more</LButton>
+                           </a>
+                          </div>
+                      </div>
+                  </>
+          })
+      }
+  </div>
+</section>
+

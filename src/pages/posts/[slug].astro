@@ -1,0 +1,125 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Prose from '../../components/Prose.astro';
+import Cta from '../../components/Cta.astro';
+
+const { slug } = Astro.params;
+if (!slug) throw new Error('Slug not found');
+const post = await getEntry('posts', slug);
+
+if (!post) throw new Error('No post found for this slug');
+const { Content } = await post.render();
+
+// Generate static pages
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map(post => ({ params: { slug: post.slug } }));
+}
+---
+
+
+
+ <Layout title={post.data.title}>
+  <div class="flex flex-col md:flex-row items-center m-4 md:m-16 justify-between  space-x-24 border-b-2 border-slate-300 top-0  z-10">
+    <div class=" space-y-4  mb-8 text-center md:text-left">
+      <div class="flex flex-row space-x-2">
+        <p class="text-red-600 mt-2 ">{post.data.readingTime} Min Read</p>
+      </div>
+      <h1 class="text-3xl text-slate-200 font-bold">{post.data.title}</h1>
+      <p class="text-xl text-slate-200">{post.data.summary.slice(0, 200)}</p>
+      <div class="flex flex-row space-x-2">
+        {post.data.profile && (<img src={post.data.profile} alt={post.data.title}height="50" width="50" />)}
+        <p class="flex items-center text-slate-200">By {post.data.authors.map(author => author.split('-').join(' ')).join(", ")}</p>
+
+      </div>
+    </div>
+    <div class="relative mb-8 transform rotate-3">
+      <!-- Rotated Card with Gradient Background -->
+      <div class="absolute inset-0 bg-gradient-to-r from-orange-300 to-orange-600 rounded-lg z-0"></div>
+      <!-- Image Container to keep the image non-rotated -->
+      <div class="relative z-10 transform -rotate-3">
+        {post.data.image && (
+          <img src={post.data.image} alt={post.data.title} height="1300" width="1200" class="rounded-lg" />
+        )}
+      </div>
+    </div>  
+  </div>
+
+  <!--lower section  -->
+<section class="md:flex md:flex-row sm:flex-col items-start pb-16 space-y-8 md:space-x-48 justify-between m-8 md:m-16" id="blog-section">
+  <div class=" hidden space-y-4 border-t-2 border-b-2 border-gray-200 p-4 lg:flex md:flex-col flex-shrink-0 w-full md:w-80 fixed items-start md:relative z-10 pt-12 mt-12 mb-12 lg:pt-0" id="sidebar">
+    <p class="italic text-slate-100">{post.data.summary}</p>
+    <div class="flex flex-row space-x-4 items-center">
+      {post.data.profile && (<img src={post.data.profile} alt={post.data.title} height="50" width="50" />)}
+      <p class="flex items-center text-slate-100">By {post.data.authors.map(author => author.split('-').join(' ')).join(", ") }</p> 
+    </div>
+  </div>
+  <div class="flex flex-col md:flex-row items-end w-auto">
+    <div class="md:ml-52 w-full h-auto text-slate-100">
+      <Prose>
+        <Content/>
+      </Prose>
+    </div>
+  </div>
+</section> 
+
+<Cta/>
+</Layout>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const sidebar = document.getElementById("sidebar");
+      const section = document.getElementById("blog-section");
+      const offsetTop = 64;
+      const footerOffset = 72;
+
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      const sectionBottom = sectionTop + sectionHeight;
+      const sidebarInitialTop = sidebar.offsetTop;
+      const sidebarHeight = sidebar.offsetHeight;
+
+      window.addEventListener("scroll", function() {
+          const scrollTop = window.scrollY;
+          const sectionRect = section.getBoundingClientRect();
+          const sidebarRect = sidebar.getBoundingClientRect();
+
+          if (scrollTop >= sectionTop - offsetTop && scrollTop <= sectionBottom - sidebarHeight - footerOffset) {
+              sidebar.style.position = "fixed";
+              sidebar.style.top = `${offsetTop}px`;
+              sidebar.style.left = `${sectionRect.left}px`;
+          } else if (scrollTop < sectionTop - offsetTop) {
+              sidebar.style.position = "absolute";
+              sidebar.style.top = `${sidebarInitialTop}px`;
+              sidebar.style.left = "72px";
+          } else if (scrollTop > sectionBottom - sidebarHeight - footerOffset) {
+              sidebar.style.position = "absolute";
+              sidebar.style.top = `${sectionBottom - sidebarHeight - sectionTop - footerOffset}px`;
+              sidebar.style.left = "72px";
+          }
+      });
+
+      const initialScroll = window.scrollY;
+      const sectionRect = section.getBoundingClientRect();
+      if (initialScroll >= sectionTop - offsetTop && initialScroll <= sectionBottom - sidebarHeight - footerOffset) {
+          sidebar.style.position = "fixed";
+          sidebar.style.top = `${offsetTop}px`;
+          sidebar.style.left = `${sectionRect.left}px`;
+      } else if (initialScroll < sectionTop - offsetTop) {
+          sidebar.style.position = "absolute";
+          sidebar.style.top = `${sidebarInitialTop}px`;
+          sidebar.style.left = "72px";
+      } else if (initialScroll > sectionBottom - sidebarHeight - footerOffset) {
+          sidebar.style.position = "absolute";
+          sidebar.style.top = `${sectionBottom - sidebarHeight - sectionTop - footerOffset}px`;
+          sidebar.style.left = "72px";
+      }
+  });
+</script>
+
+<style>
+  .fixed-sidebar {
+      position: fixed;
+      top: 64px;
+  }
+</style>
