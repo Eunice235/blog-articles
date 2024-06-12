@@ -4,6 +4,7 @@ import markdoc from '@astrojs/markdoc';
 import keystatic from '@keystatic/astro';
 import vue from "@astrojs/vue";
 import vercel from "@astrojs/vercel/serverless";
+import netlify from '@astrojs/netlify';
 
 import tailwind from "@astrojs/tailwind";
 
@@ -11,5 +12,5 @@ import tailwind from "@astrojs/tailwind";
 export default defineConfig({
   integrations: [react(), markdoc(), keystatic(), vue(), tailwind()],
   output: 'hybrid',
-  adapter: vercel()
+  adapter: netlify(),
 });
