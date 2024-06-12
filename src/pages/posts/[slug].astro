@@ -3,7 +3,12 @@ import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Prose from '../../components/Prose.astro';
 import Cta from '../../components/Cta.astro';
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Image1 from '../../components/image1.astro';
 
+
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/posts/**/*.{jpeg,jpg,png,gif,svg}');
 const { slug } = Astro.params;
 if (!slug) throw new Error('Slug not found');
 const post = await getEntry('posts', slug);
@@ -38,11 +43,13 @@ export async function getStaticPaths() {
       <!-- Rotated Card with Gradient Background -->
       <div class="absolute inset-0 bg-gradient-to-r from-orange-300 to-orange-600 rounded-lg z-0"></div>
       <!-- Image Container to keep the image non-rotated -->
-      <div class="relative z-10 transform -rotate-3">
+     <div class="relative z-10 transform -rotate-3">
         {post.data.image && (
           <img src={post.data.image} alt={post.data.title} height="1300" width="1200" class="rounded-lg" />
         )}
       </div>
+      <!--<Image1/> -->
+      
     </div>  
   </div>
 
